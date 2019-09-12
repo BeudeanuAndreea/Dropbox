@@ -1,0 +1,45 @@
+Task description:
+
+The task is to build a Vue-based Dropbox
+browser. This app will take your Dropbox API key and allow you to navigate to
+folders and download files. 
+This app would be useful if you wanted to give users access to the
+contents of your Dropbox without giving out a username and password. Be
+warned, however, a tech-savvy user could find your API key in the code and
+abuse it, so don't publish this code to the World Wide Web.
+
+Task requirements:
+
+1.Loading and querying the Dropbox API
+
+2. Listing the directories and files from your Dropbox account
+
+3. Adding a loading state to your app
+
+4. Creating a component for both files and folders
+
+5. Adding links to the folder component to update the directory listing
+
+6. Adding a download button to the file component
+
+7. Creating a breadcrumb component, so the user can easily navigate back up
+the tree
+
+8. Dynamically updating the browser URL with vue router, so if a folder is bookmarked or a
+link shared, the correct folder loads
+
+9. Caching the current Dropbox folder contents and loading data from the
+store if required
+
+10. Pre-caching not only the folder the user is currently in but also the child
+folders. This will be done by looping through the folders in the current
+display and checking if they have been cached yet. If not, we can gather the
+data from the API.
+
+11. Storing the parent folder's contents, should the user have entered via a
+direct URL. This will be done by utilizing the breadcrumb path to traverse
+up the tree.
+
+12. Cache the download links for the files. This currently requires an API for
+every file encountered, regardless of whether the folder has been cached by
+our code or not.
