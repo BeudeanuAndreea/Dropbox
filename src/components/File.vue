@@ -1,9 +1,9 @@
 <template>
-  <li class="files">
+  <div class="files">
     <font-awesome-icon v-if="entry['.tag'] == 'file'" icon="file" class="icon fileIcon"></font-awesome-icon>
     <span>{{entry.name}}</span>
-    <a class="download" v-on:click="$parent.downloadFile(entry.path_lower)">Download</a>
-  </li>
+    <font-awesome-icon class="download" v-on:click="$parent.downloadFile(entry.path_lower)" icon="cloud-download-alt"></font-awesome-icon>
+  </div>
 </template>
 <script>
 export default {
@@ -20,11 +20,17 @@ export default {
 }
 .files {
   cursor: pointer;
+  border-top: 1px solid rgb(207, 207, 207);
+  padding: 10px;
+  width: 300px;
+  position: relative;
 }
 .download {
   margin-left: 10px;
   cursor: pointer;
-  color: blue;
-  font-size: 10px;
+  color: rgb(152, 152, 156);
+  font-size: 15px;
+  position: absolute;
+  right: 0;
 }
 </style>

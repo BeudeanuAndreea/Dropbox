@@ -1,8 +1,8 @@
 <template>
-  <li class="folder" v-on:click="$parent.getFolderStructure(entry.path_lower)">
+  <div class="folder" v-on:click="$parent.getFolderStructure(entry.path_lower)">
     <font-awesome-icon v-if="entry['.tag'] == 'folder'" icon="folder" class="icon folderIcon"></font-awesome-icon>
     <span>{{entry.name}}</span>
-  </li>
+  </div>
 </template>
 <script>
 export default {
@@ -19,5 +19,8 @@ export default {
 }
 .folder {
   cursor: pointer;
+  border-top: 1px solid rgb(207, 207, 207);
+  padding: 10px;
+  width: 300px;
 }
 </style>
