@@ -30,9 +30,9 @@ export default new Vuex.Store({
 
             for (let i = 0; i < state.routeArray.length; i++) {
                 let routes = state.routeArray[i].data;
-                for (let j = 0; i < routes.length; i++) {
-                    if (routes[i].path_lower == item.path) {
-                        routes[i].link = item.link;
+                for (let j = 0; j < routes.length; j++) {
+                    if (routes[j].path_lower == item.path) {
+                        routes[j].link = item.link;
                     }
                 }
 
