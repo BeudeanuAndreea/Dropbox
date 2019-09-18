@@ -6,8 +6,8 @@
 </template>
 <style scoped>
 .circle{
-width:20px;
-height: 20px;
+width:30px;
+height: 30px;
 border-radius: 50%;
 }
 .circles {
@@ -16,13 +16,13 @@ border-radius: 50%;
 
 }
 .pink {
-    background-color: #F47E60;
+    background-color: #B1DFFF;
     animation: mymove1 3s infinite;
     position :relative;
     left: -20px;    
 }
 .red {
-    background-color: #E15B64;
+    background-color: #54B1F1;
     animation: mymove2 3s infinite;
     position :relative;
     right: -20px;

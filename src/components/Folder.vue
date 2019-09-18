@@ -1,5 +1,5 @@
 <template>
-  <div class="folder" v-on:click="$parent.getFolderStructure(entry.path_lower)">
+  <div class="folder">
     <font-awesome-icon v-if="entry['.tag'] == 'folder'" icon="folder" class="icon folderIcon"></font-awesome-icon>
     <span>{{entry.name}}</span>
   </div>
@@ -8,19 +8,19 @@
 export default {
   props: {
     entry: Object
-  },
-  methods: {}
+  }
 };
 </script>
 <style scoped>
 .folderIcon {
   color: rgb(168, 209, 243);
-  margin-right: 5px;
+  margin-right: 15px;
+  font-size: 25px;
 }
 .folder {
   cursor: pointer;
   border-top: 1px solid rgb(207, 207, 207);
   padding: 10px;
-  width: 300px;
+  width: 400px;
 }
 </style>

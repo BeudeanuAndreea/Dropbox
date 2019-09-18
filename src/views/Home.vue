@@ -1,25 +1,29 @@
 <template>
   <div class="home">
-    <div>{{this.$store.getters.getCount}}</div>
-    <button v-on:click="add()">ADD</button>
-    <button v-on:click="addAction()">Action</button>
+    <div class="files">
     <div class="breadcrumbs">
       <div
         class="folder"
         v-for="(path,index) in pathArray"
         v-bind:key="index"
         v-on:click="changePath(index)"
-      >{{ path ? "/"+path : "Home"}}</div>
+      >
+      <font-awesome-icon v-if="index !== 0" class="angle-right" icon="angle-right"></font-awesome-icon>
+      <span class="item">{{ path ? path : "Home"}}</span>
+      </div>
     </div>
     <LoadingState v-if="LoadingState" />
     <div class="fileList" v-else>
-      <component
-        v-for="(entry,index) in fileStructure"
-        v-on:click.native="navigateToPage(entry.path_display)"
-        v-bind:key="index"
-        :entry="entry"
-        v-bind:is="entry['.tag']"
-      />
+      <template v-if="fileStructure">
+        <component
+          v-for="(entry,index) in fileStructure.data"
+          v-on:click.native="navigateToPage(entry.path_display)"
+          v-bind:key="index"
+          :entry="entry"
+          v-bind:is="entry['.tag']"
+        />
+      </template>
+    </div>
     </div>
   </div>
 </template>
@@ -32,11 +36,9 @@ import File from "@/components/File.vue";
 export default {
   data() {
     return {
-      fileStructure: [],
-      paths: [],
       LoadingState: true,
       path: "",
-      newPath: " "
+      newPath: " ",
     };
   },
   components: {
@@ -47,62 +49,38 @@ export default {
   computed: {
     pathArray: function() {
       return this.path.split("/");
+    },
+    fileStructure: {
+      get: function() {
+          return this.$store.getters.getRoute(this.path);
+      }
     }
   },
   watch: {
     $route(to, from) {
-      if (to.fullPath == "/") {
-        this.getFolderStructure("");
-      } else {
-        this.getFolderStructure(to.fullPath);
-      }
+        this.verifyStoreRoutes();
     }
   },
   methods: {
-    add(){
-      this.$store.commit('ADD',10);
-    },
-    addAction() {
-      this.$store.dispatch("addCount");
-    },
-    getFolderStructure(path) {
-      let self = this;
-      var Dropbox = require("dropbox").Dropbox;
-      let ACCESS_TOKEN =
-        "Gec_gkL8oEAAAAAAAAAAVkT645DyRB8V7IiMzsXAs8yL4-vgRUa67Fe6KegNzBsl";
-      var dbx = new Dropbox({ accessToken: ACCESS_TOKEN });
-
-      dbx
-        .usersGetCurrentAccount()
-        .then(function(response) {
-          //
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
-      let asd = this;
-      dbx
-        .filesListFolder({ path: path.toLowerCase() })
-        .then(function(response) {
-          self.fileStructure = response.entries;
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
-    },
-    downloadFile(path) {
-      var Dropbox = require("dropbox").Dropbox;
-      let ACCESS_TOKEN =
-        "Gec_gkL8oEAAAAAAAAAAVkT645DyRB8V7IiMzsXAs8yL4-vgRUa67Fe6KegNzBsl";
-      var dbx = new Dropbox({ accessToken: ACCESS_TOKEN });
-      dbx
-        .filesGetTemporaryLink({ path: path })
-        .then(function(response) {
-          window.open(response.link);
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
+    verifyStoreRoutes() {
+      let index = 0;
+      let ok = 0;
+      let routes = this.$store.getters.getRouteArray;
+      for (let i = 0; i < routes.length; i++) {
+        if (routes[i].path == this.path) {
+          ok = 1;
+          index = i;
+        }
+      }
+      if(ok == 0) {
+        if (this.$route.path == "/" || this.$route.path == "/home") {
+          this.path = "";
+        } else {
+          this.path = this.$route.path;
+        }
+        this.$store.dispatch("setDropboxData", this.path);
+        
+      }
     },
     navigateToPage(e) {
       this.path = e;
@@ -113,34 +91,45 @@ export default {
       for (let i = 1; i <= index; i++) {
         this.newPath += "/" + this.pathArray[i];
       }
-      if (this.newPath == "") {
+      if ((this.newPath == "" ) && (this.$route.path != '/')) {
         this.$router.push("/");
       }
-      if (this.newPath != this.$route.path) {
+      if ((this.newPath != this.$route.path) && (this.newPath != '')) {
         this.$router.push(this.newPath);
       }
       this.path = this.newPath;
     }
   },
   created() {
+    this.verifyStoreRoutes();
+
     let self = this;
-    if (this.$route.path == "/" || this.$route.path == "/home") {
-      this.path = "";
-    } else {
-      this.path = this.$route.path;
-    }
     setTimeout(function() {
       self.LoadingState = false;
-    }, 500);
-    this.getFolderStructure(this.path);
+    }, 2000);
   }
 };
 </script>
 <style scoped>
+.home {
+  display: flex;
+}
+.angle-right{
+  margin: 0 5px;
+  font-weight: lighter;
+  color: rgb(177, 177, 177);
+}
+.files {
+  margin: auto;
+}
 .fileList {
   list-style-type: none;
   font-weight: lighter;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+}
+.item {
+  border-bottom: 1px solid rgb(177, 177, 177);
 }
 
 .folder {
@@ -148,11 +137,10 @@ export default {
 }
 .breadcrumbs {
   display: flex;
-  margin-bottom: 20px;
-  font-weight: lighter;
+  margin-bottom: 60px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+  
 }
-span {
-  color: blue;
-}
+
 </style>
