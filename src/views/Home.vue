@@ -1,7 +1,9 @@
 <template>
   <div class="home">
-    <div class="files">
-    <div class="breadcrumbs">
+    <LoadingState v-if="LoadingState" />
+    <div class="files" v-else>
+      
+    <div class="breadcrumbs" >
       <div
         class="folder"
         v-for="(path,index) in pathArray"
@@ -38,7 +40,7 @@ export default {
     return {
       LoadingState: true,
       path: "",
-      newPath: " ",
+      redirectPath: "",
     };
   },
   components: {
@@ -63,16 +65,14 @@ export default {
   },
   methods: {
     verifyStoreRoutes() {
-      let index = 0;
-      let ok = 0;
-      let routes = this.$store.getters.getRouteArray;
-      for (let i = 0; i < routes.length; i++) {
-        if (routes[i].path == this.path) {
-          ok = 1;
-          index = i;
+      let exist = false;
+      let storeRoutes = this.$store.getters.getRouteArray;
+      for (let i = 0; i < storeRoutes.length; i++) {
+        if (storeRoutes[i].path == this.path) {
+          exist = true;
         }
       }
-      if(ok == 0) {
+      if(exist = false) {
         if (this.$route.path == "/" || this.$route.path == "/home") {
           this.path = "";
         } else {
@@ -82,31 +82,32 @@ export default {
         
       }
     },
-    navigateToPage(e) {
-      this.path = e;
-      this.$router.push(e);
+    navigateToPage(clickedItemPath) {
+      this.path = clickedItemPath;
+      this.$router.push(clickedItemPath);
+  
     },
-    changePath(index) {
-      this.newPath = "";
-      for (let i = 1; i <= index; i++) {
-        this.newPath += "/" + this.pathArray[i];
+    changePath(clickedItemPosition) {
+      this.redirectPath = "";
+      for (let i = 1; i <= clickedItemPosition; i++) {
+        this.redirectPath += "/" + this.pathArray[i];
       }
-      if ((this.newPath == "" ) && (this.$route.path != '/')) {
+      if ((this.redirectPath == "" ) && (this.$route.path != '/')) {
         this.$router.push("/");
       }
-      if ((this.newPath != this.$route.path) && (this.newPath != '')) {
-        this.$router.push(this.newPath);
+      if ((this.redirectPath != this.$route.path) && (this.redirectPath != '')) {
+        this.$router.push(this.redirectPath);
       }
-      this.path = this.newPath;
+      this.path = this.redirectPath;
     }
   },
   created() {
-    this.verifyStoreRoutes();
-
     let self = this;
     setTimeout(function() {
       self.LoadingState = false;
     }, 2000);
+
+    this.verifyStoreRoutes();
   }
 };
 </script>
