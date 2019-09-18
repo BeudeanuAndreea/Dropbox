@@ -19,7 +19,7 @@
       <template v-if="fileStructure">
         <component
           v-for="(entry,index) in fileStructure.data"
-          v-on:click.native="navigateToPage(entry.path_display)"
+          v-on:click.native="navigateToPage(entry.path_display,entry['.tag'])"
           v-bind:key="index"
           :entry="entry"
           v-bind:is="entry['.tag']"
@@ -72,7 +72,7 @@ export default {
           exist = true;
         }
       }
-      if(exist = false) {
+      if(exist == false) {
         if (this.$route.path == "/" || this.$route.path == "/home") {
           this.path = "";
         } else {
@@ -82,9 +82,12 @@ export default {
         
       }
     },
-    navigateToPage(clickedItemPath) {
-      this.path = clickedItemPath;
+    navigateToPage(clickedItemPath,fileType) {
+      if(fileType != 'file'){
+         this.path = clickedItemPath;
       this.$router.push(clickedItemPath);
+      }
+     
   
     },
     changePath(clickedItemPosition) {

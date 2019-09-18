@@ -27,10 +27,15 @@ export default new Vuex.Store({
 
         },
         ADD_TEMPORARY_LINK(state, item) {
-            for (let i = 0; i < state.data.length; i++) {
-                if (state.data[i].id == item.id) {
-                    state.data[i].link = item.link;
+
+            for (let i = 0; i < state.routeArray.length; i++) {
+                let routes = state.routeArray[i].data;
+                for (let j = 0; i < routes.length; i++) {
+                    if (routes[i].path_lower == item.path) {
+                        routes[i].link = item.link;
+                    }
                 }
+
             }
         },
         ADD_ROUTE(state, route) {
@@ -74,7 +79,7 @@ export default new Vuex.Store({
                 .then(function(response) {
                     window.open(response.link);
                     context.commit("ADD_TEMPORARY_LINK", {
-                        id: entry.id,
+                        path: entry.path_lower,
                         link: response.link
                     });
                 })

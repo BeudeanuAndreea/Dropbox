@@ -12,7 +12,13 @@ export default {
   },
   methods: {
     downloadFile(entry){
-      this.$store.dispatch("addTemporaryLink",entry);
+      if(entry.link){
+        window.open(entry.link);
+      }else{
+        console.log(entry.link);
+        this.$store.dispatch("addTemporaryLink",entry);
+      }
+      
     }
   }
 };
